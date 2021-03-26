@@ -8,6 +8,21 @@ name:           tutorial
 version:        0.0.0
 build-type:     Simple
 
+data-files:     config/*.yml
+              , config/routes.yesodroutes
+              , config/*.ico
+              , config/models.persistentmodels
+              , config/*.txt
+              , static/css/*.css
+              , static/fonts/*.eot
+              , static/fonts/*.svg
+              , static/fonts/*.ttf
+              , static/fonts/*.woff
+              , templates/*.hamlet
+              , templates/*.lucius
+              , templates/*.julius
+
+
 flag dev
   description: Turn on development settings, like auto-reload templates.
   manual: False
@@ -26,6 +41,8 @@ library
       Handler.Common
       Handler.Home
       Handler.Profile
+      LucidTemplates.HomeTemplate
+      Lucid.Supplemental
       Import
       Import.NoFoundation
       Model
