@@ -3,13 +3,13 @@
 Here we will create a yesod project that functions with flake. What we will be doing is the following:
 
 0. Disclaimer
-1. Important note about github
-2. Installing flakes
-3. Creating a project
-4. Adding flakes to our project
-5. Setting up our database
-6. Modifying our .cabal file 
-7. The problem with github
+1. [Important note about github](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#important-note-about-github)
+2. [Installing flakes](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#installing-flakes)
+3. [Creating a project](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#creating-a-project)
+4. [Adding flakes to our project](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#adding-flakes-to-our-project)
+5. [Setting up our database](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#setting-up-our-database)
+6. [Modifying our .cabal file](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#modifying-our-cabal-file) 
+7. [The problem with github](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#the-problem-with-github)
 
 
 ## Disclaimer
