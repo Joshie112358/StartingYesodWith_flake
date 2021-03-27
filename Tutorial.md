@@ -33,7 +33,6 @@ Next we will go to the new folder we just created with `cd my-project`, in our c
 
 ``` 
 app  config  package.yaml  README.md  src  stack.yaml  static  templates  test  tutorial.cabal
-
 ```
 
 **From now on, whenever you see `tutorial` inside a command or file, please remember that you will have to replace it with the name of your project.**
@@ -109,25 +108,22 @@ Start by placing the following code inside a file, name it `flake.nix` and place
       };
     });
 }
-
 ```
 
 When you have `flake.nix` inside your project folder, run `nix build` inside your folder, this will build your project, be patient, it will take a while.
 
-Once `nix build` is done, rename `stack.yaml` to `stack.yaml.bak`and `paackage.yaml` to `package.yaml.bak`; you could also delete them, but renaming them gives you the opportunity to restore them in case an error occurs. As we said in the beginning, if you had made the github repository since the beginning, this step would cause an error when running `nix build` or `nix develop`.
+Once `nix build` is done, rename `stack.yaml` to `stack.yaml.bak`and `package.yaml` to `package.yaml.bak`; you could also delete them, but renaming them gives you the opportunity to restore them in case an error occurs. As we said in the beginning, if you had made the github repository since the beginning, this step would cause an error when running `nix build` or `nix develop`.
 
 Then, in your projects' main directory create a file named `devel.sh` with the following contents:
 ```
 # ALL: Fix crazy reloading.
 
 ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings
-
 ```
 This is only a command we will run inside `nix develop`, that will make something similar to what `yesod devel` does, and we will use it a lot throughout this guide.
 
 ## Setting up our database
 
-Lo de vic
 Because we will store information, we need to setup our databases. First go to  `tutorial/config/settings.yml`, there we will find the following lines:
 ```
 database:
@@ -138,7 +134,6 @@ database:
   # See config/test-settings.yml for an override during tests
   database: "_env:YESOD_PGDATABASE:tutorial"
   poolsize: "_env:YESOD_PGPOOLSIZE:10"
-
 ```
 We will then modify the user, password and database parameters a bit, so they look like this:
 ```
@@ -150,12 +145,11 @@ database:
   # See config/test-settings.yml for an override during tests
   database: "_env:YESOD_PGDATABASE:tutorialdb"
   poolsize: "_env:YESOD_PGPOOLSIZE:10"
-
 ```
 This is so we can distinguish the user, password and database.
 Now go to a terminal and run `psql -U postgres postgres`, this will enter us to the prompt `postrgres=#`. We now create our role with `CREATE ROLE tutorialu WITH LOGIN PASSWORD 'tutorialP';`, we will then see `CREATE ROLE` appear, which will notify us that there where no errors.  
 
-Then run `nix develop`, this will also take a while, and once that is finished run `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` (the command that is inside devel.sh). If there is an error, try again or reboot your pc or both. If everything goes well, we will see `Devel application launched: http://localhost:3000` appear in our console, then if we go to that url in our browser we will see our first webpage!, although at this point it will only be the default page that the template provides us; let's change that. But before that press Ctrl-C to end the command, then write `exit` or press Ctrl-D to exit `nix develop`, because we will run `nix develop` again in the next section.
+Next, run `nix develop`, this will also take a while, and once that is finished run `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` (the command that is inside devel.sh). If there is an error, try again or reboot your pc or both. If everything goes well, we will see `Devel application launched: http://localhost:3000` appear in our console, then if we go to that url in our browser we will see our first webpage!, although at this point it will only be the default page that the template provides us; let's change that. But before that press Ctrl-C to end the command, then write `exit` or press Ctrl-D to exit `nix develop`, because we will run `nix develop` again in the next section.
 
 
 
@@ -168,7 +162,6 @@ Now we will go to our `tutorial.cabal` file, and search for the end of the `buil
     , blaze-html
     , blaze-markup
     , lucid
-
 ```
     
 Then run `nix develop` and `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings`, we should see `Devel application launched: http://localhost:3000` appear again, this means we are on the right track. We will then exit `nix develop` again.
@@ -178,6 +171,8 @@ Now we will create two new folders inside `tutorial/src`, those will be `Lucid` 
 
 Now lets modify the `tutorial/src/Handler/Home.hs` file, where the first thing we will change are the language pragmas we will be using. Language pragmas look like this:
 > {-# LANGUAGE MyLanguageExtension #-}
+
+
 You can read more about them here [Yesod book](https://www.yesodweb.com/book/haskell). Replace all of the language pragmas inside `Home.hs` with the following:
 ```
 {-# LANGUAGE DeriveDataTypeable         #-}
@@ -191,7 +186,6 @@ You can read more about them here [Yesod book](https://www.yesodweb.com/book/has
 {-# LANGUAGE ScopedTypeVariables        #-}
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeFamilies               #-}
-
 ```
 
 Now go beyond `module Handler.Home where` to the imports section, you should have these imports:
@@ -213,11 +207,8 @@ getHomeR = do
   defaultLayout $ do
     setTitle "Hola Mundo!"
     toWidget . preEscapedToHtml . renderText $ homePage
-
 ```
-So now our Home.hs file should look like the one over [this Github repository](https://github.com/Joshie112358/StartingYesodWith_flake)
-
-We are almost there, go to `tutorial/config/routes.yesodroutes`, there will be a line that reads like this:
+So now our Home.hs file should look like the one over [this Github repository](https://github.com/Joshie112358/StartingYesodWith_flake). We are almost there, go to `tutorial/config/routes.yesodroutes`, there will be a line that reads like this:
 ```
 / HomeR GET POST
 ```
