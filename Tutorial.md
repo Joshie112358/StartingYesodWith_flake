@@ -125,7 +125,7 @@ This is only a command we will run inside `nix develop`, that will make somethin
 
 ## Setting up our database
 
-Because we will store information, we need to setup our databases. First go to  `tutorial/config/settings.yml`, there we will find the following lines:
+Because we will store information, we need to setup our database. First go to  `tutorial/config/settings.yml`, there we will find the following lines:
 ```
 database:
   user:     "_env:YESOD_PGUSER:tutorial"
@@ -148,7 +148,9 @@ database:
   poolsize: "_env:YESOD_PGPOOLSIZE:10"
 ```
 This is so we can distinguish the user, password and database.
-Now go to a terminal and run `psql -U postgres postgres`, this will enter us to the prompt `postrgres=#`. We now create our role with `CREATE ROLE tutorialu WITH LOGIN PASSWORD 'tutorialP';`, we will then see `CREATE ROLE` appear, which will notify us that there where no errors.  
+Now go to a terminal and run `psql -U postgres postgres`, this will enter us to the prompt `postrgres=#`. We will now create our role (that will enable our project to access the database) with `CREATE ROLE tutorialu WITH LOGIN PASSWORD 'tutorialP';`, we will then see `CREATE ROLE` appear, which will notify us that there where no errors.
+Then, to create our database we will run `CREATE DATABASE tutorialdb;`, the text *CREATE DATABASE** will notify us that everything went well. Lastly, we will give rights to our project to access the database, this is done with `GRANT ALL ON DATABASE tutorialdb TO tutorialu;`, the word *GRANT* will show us everything went without a hitch. 
+To exit the prompt, we will write `\q`.
 
 Next, run `nix develop`, this will also take a while, and once that is finished run `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` (the command that is inside devel.sh). If there is an error, try again or reboot your pc or both. If everything goes well, we will see `Devel application launched: http://localhost:3000` appear in our console, then if we go to that url in our browser we will see our first webpage!, although at this point it will only be the default page that the template provides us; let's change that. But before that press Ctrl-C to end the command, then write `exit` or press Ctrl-D to exit `nix develop`, because we will run `nix develop` again in the next section.
 
