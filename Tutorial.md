@@ -2,13 +2,14 @@
 
 Here we will create a yesod project that functions with flake. What we will be doing is the following:
 
-0. [Disclaimer](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#disclaimer)
-1. [Important note about github](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#important-note-about-github)
-2. [Installing flakes](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#installing-flakes)
-3. [Creating our project](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#creating-our-project)
-4. [Adding flakes to our project](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#adding-flakes-to-our-project)
-5. [Setting up our database](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#setting-up-our-database)
-6. [Modifying our .cabal file](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#modifying-our-cabal-file) 
+- [Disclaimer](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#disclaimer)
+- [Important note about github](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#important-note-about-github)
+1. [Installing flakes](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#installing-flakes)
+2. [Creating our project](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#creating-our-project)
+3. [Adding flakes to our project](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#adding-flakes-to-our-project)
+4. [Setting up our database](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#setting-up-our-database)
+5. [Modifying our .cabal file](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#modifying-our-cabal-file)
+6. [Adding Lucid and LucidTemplates](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#adding-lucid-and-lucidtemplates)
 7. [The problem with github](https://github.com/Joshie112358/StartingYesodWith_flake/blob/master/Tutorial.md#the-problem-with-github)
 
 
@@ -39,7 +40,7 @@ app  config  package.yaml  README.md  src  stack.yaml  static  templates  test  
 
 ## Adding flakes to our project
 Before we make our first webpage we will need add flakes to our project (because that is what we will be using).
-Start by placing the following code inside a file, name it `flake.nix` and place it inside your project's main directory. Then you will have to replace every "tutorial" with the name of your project, in emacs this can be easily done with `M-shift-5`.
+Start by placing the following code inside a file, name it `flake.nix` and place it inside your project's main directory. Then you will have to replace every "tutorial" with the name of your project, in emacs this can be easily done with `Meta-shift-5`.
 
 
 ```
@@ -155,7 +156,45 @@ Next, run `nix develop`, this will also take a while, and once that is finished 
 
 ## Modifying our .cabal file 
 
-Now we will go to our `tutorial.cabal` file, and search for the end of the `build depends` section inside the `library` and `executable` modules (this should be around line 38 and line 91), there we will add the following lines: 
+Now we will go to our `tutorial.cabal` file, first, at the beginning of the file, after `build type: Simple` you will need to write `data-files:` followed by the files (with routes and extensions) your project will use. Because writing every single file name would need a lot of lines and time, we will use the wildcard pattern `*` so we need to only write one line per extension. Since we just started our project, it will look like this:
+```
+data-files:     config/*.yml
+              , config/routes.yesodroutes
+              , config/*.ico
+              , config/models.persistentmodels
+              , config/*.txt
+              , static/css/*.css
+              , static/fonts/*.eot
+              , static/fonts/*.svg
+              , static/fonts/*.ttf
+              , static/fonts/*.woff
+              , templates/*.hamlet
+              , templates/*.lucius
+              , templates/*.julius
+```
+This means, in the first line for example, that our project will use all of the files with extension .yml that are in the `config` folder. Note that when you add new files to your project you will need to come back here to list it, otherwise your project won't identify it.
+
+Then go to the section of `exposed-modules` inside the `library` section. Here we see all the files we have in our `tutorial/src` folder, except the ones we added, i.e. Lucid.Supplemental and LucidTemplates.HomeTemplate, add them. Once added, it should look like this:
+```
+library
+  exposed-modules:
+      Application
+      Foundation
+      Handler.Comment
+      Handler.Common
+      Handler.Home
+      Handler.Profile
+      LucidTemplates.HomeTemplate
+      Lucid.Supplemental
+      Import
+      Import.NoFoundation
+      Model
+      Settings
+      Settings.StaticFiles
+```
+And as with the other section, everytime you create a file (or folder) in `tutorial/src`, you will need to list it here, otherwise, you will have an error.
+
+Now search for the end of the `build depends` section inside the `library` and `executable` modules (this should be around line 38 and line 91), there we will add the following lines: 
 
 ```
     , blaze-builder
@@ -165,6 +204,8 @@ Now we will go to our `tutorial.cabal` file, and search for the end of the `buil
 ```
     
 Then run `nix develop` and `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings`, we should see `Devel application launched: http://localhost:3000` appear again, this means we are on the right track. We will then exit `nix develop` again.
+
+## Adding Lucid and LucidTemplates
 
 Now we will create two new folders inside `tutorial/src`, those will be `Lucid` and `LucidTemplates`. Then go to this [Github repository](https://github.com/Joshie112358/StartingYesodWith_flake) and download the `tutorial/src/Lucid/Supplemental.hs` and `tutorial/src/LucidTemplates/HomeTemplate.hs` files. And as one would expect, we will save the `Supplemental.hs` file inside our `tutorial/src/Lucid` folder; and the `HomeTemplate.hs` file inside `tutorial/src/LucidTemplates`.
 
@@ -221,7 +262,14 @@ We are now ready to run `nix develop` and `ghcid --command '(echo ":l app/DevelM
 With this you should be able to get started with your yesod project, if you want to read further go to [Guia para el uso de Yesod en Linux con Postgres](https://github.com/VicHebar/YesodProject/blob/master/TutorialPostgres.md) and read section 5. If you are interested in making your project into a github repository then read the next section.
 
 ## The problem with github
-We now have our project which is able to run `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` inside `nix develop`. Now lets make it a repository with `git init`, and then try to run `nix build` or `nix develop`, if you are unlucky an error like this will pop up:
+We now have our project which is able to run `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` inside `nix develop`. Now lets make it a repository with 
+
+```
+git init
+git add -A
+git commit -m "Initial commit"
+```
+, and then try to run `nix build` or `nix develop`, if you are unlucky an error like this will pop up:
 
 ```
 error: --- Error -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- nix
@@ -231,46 +279,7 @@ builder for '/nix/store/w2qfz2g7rsmspqznf308r9khxd8jg25q-helloworld-plan-to-nix-
   Please create a package description file <pkgname>.cabal or a cabal.project file referencing the packages you want to build.
 ```
 
-To solve this issue go to the `.gitignore` file inside your project and erase the line that says `tutorial.cabal` (instead of tutorial it should be your projects' name), this will make it so our project doesn't ignore our .cabal file. Then go to your `tutorial.cabal` file, where we will make some changes.
-First, at the beginning of the file, after `build type: Simple` you will need to write `data-files:` followed by the files (with routes and extensions) your project will use. Because writing every single file name would need a lot of lines and time, we will use the wildcard pattern `*` so we need to only write one line per extension. Since we just started our project, it will look like this:
-```
-data-files:     config/*.yml
-              , config/routes.yesodroutes
-              , config/*.ico
-              , config/models.persistentmodels
-              , config/*.txt
-              , static/css/*.css
-              , static/fonts/*.eot
-              , static/fonts/*.svg
-              , static/fonts/*.ttf
-              , static/fonts/*.woff
-              , templates/*.hamlet
-              , templates/*.lucius
-              , templates/*.julius
-```
-This means, in the first line for example, that our project will use all of the files with extension .yml that are in the `config` folder. Note that when you add new files to your project you will need to come back here to list it, otherwise your project won't identify it.
-
-Then go to the section of `exposed-modules` inside the `library` section. Here we see all the files we have in our `tutorial/src` folder, except the ones we added, i.e. Lucid.Supplemental and LucidTemplates.HomeTemplate, add them. Once added, it should look like this:
-```
-library
-  exposed-modules:
-      Application
-      Foundation
-      Handler.Comment
-      Handler.Common
-      Handler.Home
-      Handler.Profile
-      LucidTemplates.HomeTemplate
-      Lucid.Supplemental
-      Import
-      Import.NoFoundation
-      Model
-      Settings
-      Settings.StaticFiles
-```
-And as with the other section, everytime you create a file (or folder) in `tutorial/src`, you will need to list it here, otherwise, you will have an error.
-
-With this, you should be able to use `nix develop` and `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` as before, so give it a try and start creating your project. 
+To solve this issue go to the `.gitignore` file inside your project and erase the line that says `tutorial.cabal` (instead of tutorial it should be your projects' name), this will make it so our project doesn't ignore our .cabal file. Then commit your changes with `git add -A` and `git commit -m "Modified gitignore"`. With this, you should be able to use `nix develop` and `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` as before, so give it a try and start creating your project. 
 
 
 
