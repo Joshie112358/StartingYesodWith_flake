@@ -1,3 +1,8 @@
+# Important note about this repository
+This repository is meant to be a guide to help you create a yesod project that works with flakes. The guide is the file "Tutorial.md" so please read that before you start questioning what are all the files in this repository (the short answer is that they are all the files your project may generate). I hope this guide helps you in any way and if have a question or comment, feel free to say it.
+
+Now all the information github automatically generates, in case you need it, if not go to `Tutorial.md` and start creating your project.
+
 ## Database Setup
 
 After installing Postgres, run:
