@@ -149,16 +149,16 @@ database:
 ```
 This is so we can distinguish the user, password and database.
 Now go to a terminal and run `psql -U postgres postgres`, this will enter us to the prompt `postrgres=#`. We will now create our role (that will enable our project to access the database) with `CREATE ROLE tutorialu WITH LOGIN PASSWORD 'tutorialP';`, we will then see `CREATE ROLE` appear, which will notify us that there where no errors.
-Then, to create our database we will run `CREATE DATABASE tutorialdb;`, the text *CREATE DATABASE** will notify us that everything went well. Lastly, we will give rights to our project to access the database, this is done with `GRANT ALL ON DATABASE tutorialdb TO tutorialu;`, the word *GRANT* will show us everything went without a hitch. 
-To exit the prompt, we will write `\q`.
+Then, to create our database we will run `CREATE DATABASE tutorialdb;`, the text *CREATE DATABASE* will notify us that everything went well. Lastly, we will give rights to our project to access the database, this is done with `GRANT ALL ON DATABASE tutorialdb TO tutorialu;`, the word *GRANT* will show us everything went without a hitch. 
 
-Next, run `nix develop`, this will also take a while, and once that is finished run `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` (the command that is inside devel.sh). If there is an error, try again or reboot your pc or both. If everything goes well, we will see `Devel application launched: http://localhost:3000` appear in our console, then if we go to that url in our browser we will see our first webpage!, although at this point it will only be the default page that the template provides us; let's change that. But before that press Ctrl-C to end the command, then write `exit` or press Ctrl-D to exit `nix develop`, because we will run `nix develop` again in the next section.
+
+Next, run `nix develop`, this will also take a while, and once that is finished run `./devel.sh`, or if that doesn't work try, `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` (the command that is inside devel.sh). If there is an error, try again or reboot your pc or both. If everything goes well, we will see `Devel application launched: http://localhost:3000` appear in our console, then if we go to that url in our browser we will see our first webpage!, although at this point it will only be the default page that the template provides us; let's change that. But before that press Ctrl-C to end the command, then write `exit` or press Ctrl-D to exit `nix develop`, because we will run `nix develop` again in the next section.
 
 
 
 ## Modifying our .cabal file 
 
-Now we will go to our `tutorial.cabal` file, first, at the beginning of the file, after `build type: Simple` you will need to write `data-files:` followed by the files (with routes and extensions) your project will use. Because writing every single file name would need a lot of lines and time, we will use the wildcard pattern `*` so we need to only write one line per extension. Since we just started our project, it will look like this:
+Now we will go to our `tutorial.cabal` file, first, at the beginning of the file, after `build type: Simple` you will need to write `data-files:` followed by the files (with routes and extensions) your project will use. Because writing every single file name would need a lot of lines and time, we will use the wildcard pattern "\*" so we need to only write one line per extension. Since we just started our project, it will look like this:
 ```
 data-files:     config/*.yml
               , config/routes.yesodroutes
@@ -176,7 +176,7 @@ data-files:     config/*.yml
 ```
 This means, in the first line for example, that our project will use all of the files with extension .yml that are in the `config` folder. Note that when you add new files to your project you will need to come back here to list it, otherwise your project won't identify it.
 
-Then go to the section of `exposed-modules` inside the `library` section. Here we see all the files we have in our `tutorial/src` folder, except the ones we added, i.e. Lucid.Supplemental and LucidTemplates.HomeTemplate, add them. Once added, it should look like this:
+Then go to the section of `exposed-modules` inside the `library` section. Here we see all the files we have in our `tutorial/src` folder, except the ones we will add, i.e. Lucid.Supplemental and LucidTemplates.HomeTemplate, add them. Once added, it should look like this:
 ```
 library
   exposed-modules:
@@ -204,8 +204,7 @@ Now search for the end of the `build depends` section inside the `library` and `
     , blaze-markup
     , lucid
 ```
-    
-Then run `nix develop` and `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings`, we should see `Devel application launched: http://localhost:3000` appear again, this means we are on the right track. We will then exit `nix develop` again.
+Because we made it so our project searches for "LucidTemplates.HomeTemplate" and "Lucid.Supplemental", we wont be able to run `nix develop` and `ghcid --command '(echo ":l app/DevelMain.hs" && cat) | cabal v2-repl' --test 'update' --warnings` without encountering an error, so let's fix that by adding those files. 
 
 ## Adding Lucid and LucidTemplates
 
